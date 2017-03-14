@@ -22,7 +22,6 @@ class MenuTest {
 
     }
 
-
     @Test
     void encryptionTest() {
         if (!Menu.programMenu("1").equals("Encryption"))

@@ -31,7 +31,7 @@ public class Menu {
 
 
     static String programMenu(String input) {
-        String output=null;
+        String output="";
         switch (input) {
             case "1":
                 getPath();
