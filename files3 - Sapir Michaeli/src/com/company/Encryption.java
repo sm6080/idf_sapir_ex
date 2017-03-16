@@ -1,13 +1,10 @@
 package com.company;
 
+import java.io.File;
+
 /**
- * Created by Sapir Michaeli  on 28.02.2017.
+ * Created by Sapir Michaeli on 16.03.2017.
  */
-public class Encryption implements FileOperation{
-
-    @Override
-    public void operation() {
-        System.out.println("Encryption");
-
-    }
+public interface Encryption {
+    void encrypt(int key,File file);
 }
