@@ -11,6 +11,8 @@ import java.util.Scanner;
  */
 public class Input implements InputInterface {
 
+    public static final String EXIT = "exit";
+
     @Override
     public String getInput() {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -19,6 +21,6 @@ public class Input implements InputInterface {
         } catch (IOException e) {
 
         }
-        return "exit";
+        return EXIT;
     }
 }

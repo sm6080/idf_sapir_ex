@@ -13,8 +13,10 @@ enum State {
 
 public class Menu {
 
-
     public static final String EXIT = "exit";
+    public static final String ENCRYPTION = "1";
+    public static final String DECRYPTION = "2";
+
 
     Output output;
     Input input;
@@ -86,10 +88,10 @@ public class Menu {
     String programMenu(String choice) {
         String outPut = "";
         switch (choice) {
-            case "1":
+            case ENCRYPTION:
                 outPut = "encryption";
                 break;
-            case "2":
+            case DECRYPTION:
                 outPut = "decryption";
                 break;
         }

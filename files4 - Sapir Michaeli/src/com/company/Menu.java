@@ -1,7 +1,6 @@
 package com.company;
 
 import java.io.File;
-import java.util.Random;
 
 /**
  * Created by Sapir Michaeli on 16.03.2017.
