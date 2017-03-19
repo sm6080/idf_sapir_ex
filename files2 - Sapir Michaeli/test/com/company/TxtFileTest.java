@@ -17,23 +17,25 @@ import static org.junit.jupiter.api.Assertions.*;
 class TxtFileTest {
 
     @Test
-    void wrongPath(){
-        TxtFile textFile=new TxtFile("C:\\files?\\m.txt");
-        if(textFile.getIsExist())
+    void wrongPath() {
+        TxtFile textFile = new TxtFile("C:\\files?\\m.txt");
+        if (textFile.getIsExist())
             Assertions.fail("error");
     }
+
     @Test
-    void exist(){
-        TxtFile textFile=new TxtFile("C:\\files\\m.txt");
-        File file=new File("C:\\files\\m.txt");
-        if(file.exists()&&!textFile.getIsExist())
+    void exist() {
+        TxtFile textFile = new TxtFile("C:\\files\\m.txt");
+        File file = new File("C:\\files\\m.txt");
+        if (file.exists() && !textFile.getIsExist())
             Assertions.fail("error");
     }
+
     @Test
-    void notExist(){
-        TxtFile textFile=new TxtFile("C:\\files\\m9.txt");
-        File file=new File("C:\\files\\m9.txt");
-        if(!file.exists()&&textFile.getIsExist())
+    void notExist() {
+        TxtFile textFile = new TxtFile("C:\\files\\m9.txt");
+        File file = new File("C:\\files\\m9.txt");
+        if (!file.exists() && textFile.getIsExist())
             Assertions.fail("error");
     }
 

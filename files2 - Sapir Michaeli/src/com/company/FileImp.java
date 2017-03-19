@@ -1,4 +1,5 @@
 package com.company;
+
 import java.io.File;
 
 /**
@@ -8,7 +9,7 @@ import java.io.File;
 
 public interface FileImp {
 
-     void read();
-     void write();
+    void read();
 
+    void write();
 }

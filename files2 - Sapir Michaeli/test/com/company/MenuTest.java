@@ -1,15 +1,8 @@
 package com.company;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
-
-import java.util.Scanner;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -24,7 +17,7 @@ class MenuTest {
     }
     @Test
     void encryptionTest(){
-        if(! new Menu().programMenu("2").equals("encryption"))
+        if(!new Menu().programMenu("2").equals("encryption"))
             Assertions.fail("not encryption");
     }
     @Test
@@ -32,7 +25,6 @@ class MenuTest {
         if (!new Menu().programMenu("hgurhguh").equals("")){
             Assertions.fail("invalid input");
         }
-
     }
     @Test
     void wrongNumberTest(){
@@ -54,7 +46,6 @@ class MenuTest {
         InOrder inOrder= inOrder(output);
         inOrder.verify(output).output("please choose:\n 1. encryption\n 2. decryption\n type exit at any point to exit this program");
         inOrder.verify(output).output("enter path");
-
     }
 
     @Test
@@ -69,5 +60,4 @@ class MenuTest {
         inOrder.verify(output, times(2)).output("the choice is not valid,please choose:\n 1. encryption\n 2. decryption\n type exit at any point to exit this program");
 
     }
-
 }
