@@ -1,12 +1,10 @@
 package com.company;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.InOrder;
 
 import java.io.*;
 
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.*;
 
 /**
  * Created by Sapir Michaeli on 14.03.2017.
@@ -32,6 +30,12 @@ class CaesarTest {
                     fail("not encrypt");
 
             }
+            if (actuallyRead == -1) {
+                actuallyReadEncrypt = inputStreamEncrypt.read();
+                if ((actuallyReadEncrypt != -1))
+                    fail("not encrypt");
+            } else
+                fail("not encrypt");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -54,41 +58,47 @@ class CaesarTest {
 
     }
 
-//    }@Test
-//    void decryptTest() {
-//        Decryption decryption = new Caesar();
-//        File file = new File("C:\\files\\sap.txt");
-//        decryption.decrypt(1234, file);
-//        File encryptFile = new File("C:\\files\\sap.encrypted");
-//        InputStream inputStream = null, encryptInputStream = null;
-//        try {
-//            encryptInputStream = new FileInputStream(encryptFile);
-//            inputStream = new FileInputStream(file);
-//            int actuallyRead = 0, encryptActuallyRead = 0;
-//            byte b;
-//            while ((actuallyRead = inputStream.read()) != -1 && (encryptActuallyRead = encryptInputStream.read()) != -1) {
-//                if (!((byte) (actuallyRead + 12345) == (byte) (encryptActuallyRead)))
-//                    fail("not encrypted");
-//            }
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (inputStream != null)
-//                try {
-//                    inputStream.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            if (encryptInputStream != null)
-//                try {
-//                    encryptInputStream.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//        }
-
+    @Test
+    void decryptTest(){
+        Decryption encryption = new Caesar();
+        File file = new File("C:\\files\\sap.txt");
+        encryption.decrypt(12345, file);
+        File decryptedFile = new File("C:\\files\\sap.encrypted_decrypted.txt");
+        InputStream decryptedInputstream = null, inputStream = null;
+        try {
+            decryptedInputstream = new FileInputStream(decryptedFile);
+            inputStream = new FileInputStream(file);
+            int decryptActuallyRead = 0, actuallyRead = 0;
+            byte b;
+            while ((actuallyRead = inputStream.read()) != -1 && (decryptActuallyRead = decryptedInputstream.read()) != -1) {
+                if (actuallyRead != decryptActuallyRead)
+                    fail("not decrypt");
+            }
+            if (actuallyRead == -1) {
+                decryptActuallyRead = decryptedInputstream.read();
+                if ((decryptActuallyRead != -1))
+                    fail("not decrypt");
+            } else
+                fail("not decrypt");
+        }catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null)
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            if (decryptedInputstream != null)
+                try {
+                    decryptedInputstream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+    }
 }
 
 

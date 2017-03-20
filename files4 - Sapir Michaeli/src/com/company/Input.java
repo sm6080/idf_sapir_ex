@@ -1,15 +1,15 @@
 package com.company;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 
 /**
  * Created by Sapir Michaeli on 15.03.2017.
  */
 public class Input implements InputInterface {
+
+    public static final String EXIT = "exit";
 
     @Override
     public String getInput() {
@@ -19,6 +19,6 @@ public class Input implements InputInterface {
         } catch (IOException e) {
 
         }
-        return "exit";
+        return EXIT;
     }
 }

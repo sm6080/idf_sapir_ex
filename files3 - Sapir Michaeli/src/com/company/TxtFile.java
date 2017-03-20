@@ -9,7 +9,6 @@ public class TxtFile extends File implements FileImp{
 
     private boolean isExist=false;
 
-    // check the
     public TxtFile(String pathname) {
         super(pathname);
         if (exists()  && isFile()) {
@@ -28,11 +27,9 @@ public class TxtFile extends File implements FileImp{
 
     @Override
     public void read() {
-
     }
 
     @Override
     public void write() {
-
     }
 }

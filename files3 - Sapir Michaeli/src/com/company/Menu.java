@@ -36,18 +36,20 @@ public class Menu {
         State state = State.GET_OPERATION;
         File file = null;
         output.getOutput("please choose:\n 1. encryption\n 2. decryption\n type exit at any point to exit this program");
-        while (!(userInput = input.getInput()).equals("exit")) {
+        while (!(userInput = input.getInput()).equals(EXIT)) {
             switch (state) {
                 case GET_OPERATION:
-                    if (!(operation = programMenu(userInput)).equals("")) {
+                    if(userInput.equals(DECRYPTION)|| userInput.equals(ENCRYPTION)) {
                         state = State.GET_PATH;
                         output.getOutput("enter path");
-                    } else
+                        operation=userInput;
+                    }
+                    else
                         output.getOutput("the choice is not valid,please choose:\n 1. encryption\n 2. decryption\n type exit at any point to exit this program");
                     break;
                 case GET_PATH:
                     if ((file = getPath(userInput)) != null) {
-                        if (operation.equals("decryption")) {
+                        if (operation.equals(DECRYPTION)) {
                             state = State.GET_KEY;
                             output.getOutput("please enter a key");
                         } else {
@@ -78,7 +80,7 @@ public class Menu {
 
     private void operationChoice(String userInput, Integer key, File file) {
         Caesar caesar = new Caesar();
-        if (userInput.equals("encryption")) {
+        if (userInput.equals(ENCRYPTION)) {
             caesar.encrypt(key, file);
         } else {
             caesar.decrypt(key, file);
