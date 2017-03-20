@@ -1,12 +1,5 @@
 package com.company;
 
-/**
- * Created by Sapir Michaeli on 20.03.2017.
- */
-enum EncryptionType{
-    CAESAR, XOR, REVERSE, MULTIPLICATION
-}
-
 public class EncryptionFactory {
 
     public Encryption getEncryption(EncryptionType encryptionType) {
@@ -15,13 +8,17 @@ public class EncryptionFactory {
         switch (encryptionType) {
             case CAESAR:
                 return new Caesar();
-           /* case XOR:
-                return new Rectangle();
-            case "reverse:":
-                return new Square();*/
+           case XOR:
+                return new Xor();
+            case MULTIPLICATION:
+                return new Multiplication();
             default:
                 return null;
-
         }
     }
+
+    public Encryption reverseEncryption(EncryptionType type) {
+        return new Reverse(getEncryption(type));
+    }
 }
+
