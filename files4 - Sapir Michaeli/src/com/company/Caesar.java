@@ -5,7 +5,7 @@ import java.io.*;
 /**
  * Created by Sapir Michaeli on 16.03.2017.
  */
-public class Caesar implements FileOperation ,Encryption, Decryption {
+public class Caesar implements FileOperation ,Encryption {
     @Override
     public void operation() {
 

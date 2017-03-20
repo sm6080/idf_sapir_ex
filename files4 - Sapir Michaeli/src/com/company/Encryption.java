@@ -7,4 +7,5 @@ import java.io.File;
  */
 public interface Encryption {
     void encrypt(int key,File file);
+    void decrypt(int key, File file);
 }
