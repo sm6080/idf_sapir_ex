@@ -7,10 +7,27 @@ import java.io.*;
  */
 public class EncryptionAlgorithms {
 
-    public static void encyptOrDecrypt(int key, File file, boolean isChoiseEncrypt,  EncryptionType encryptionType) {
+    static BeginEndListener beginEndListener;
+
+    public void setBeginEndListener(BeginEndListener beginEndListener) {
+        this.beginEndListener = beginEndListener;
+    }
+
+    public void started(){
+            if (beginEndListener!=null)
+                beginEndListener.start();
+        }
+    public void finished(){
+        if (beginEndListener!=null)
+            beginEndListener.finish();
+    }
+
+
+    public void encyptOrDecrypt(int key, File file, boolean isChoiseEncrypt, EncryptionType encryptionType) {
+        started();
         String path = file.getPath();
         int x = path.lastIndexOf('.');
-        if (isChoiseEncrypt) {//if key encrypt else decrypt
+        if (isChoiseEncrypt) {    //if key encrypt else decrypt
             path = path.substring(0, x) + ".encrypted.txt";
         } else {
             path = path.substring(0, x) + "_decrypted.txt";
@@ -27,7 +44,7 @@ public class EncryptionAlgorithms {
                 if (isChoiseEncrypt) {
                     b =doEncrypt(encryptionType,actuallyRead,key);
                 } else
-                    b = doEncrypt(encryptionType,actuallyRead,key);
+                    b = doDecrypt(encryptionType,actuallyRead,key);
                 outputStream.write(b);
             }
 
@@ -48,10 +65,11 @@ public class EncryptionAlgorithms {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                finished();
         }
     }
 
-    private static byte doEncrypt(EncryptionType encryptionType ,int actuallyRead, int key){
+    private byte doEncrypt(EncryptionType encryptionType ,int actuallyRead, int key){
         switch (encryptionType){
             case CAESAR:
                return  (byte) (actuallyRead + key);
@@ -75,5 +93,10 @@ public class EncryptionAlgorithms {
             default:
                 return 0;
         }
+    }
+
+    interface BeginEndListener{
+        void start();
+        void finish();
     }
 }

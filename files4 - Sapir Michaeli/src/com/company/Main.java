@@ -4,8 +4,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-         Menu menu=new Menu();
-            menu.getMenu();
-
+        Menu menu = new Menu();
+        EncryptionAlgorithms encryptionAlgorithms = new EncryptionAlgorithms();
+        encryptionAlgorithms.setBeginEndListener(menu);
+        menu.getMenu();
     }
 }

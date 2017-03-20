@@ -13,12 +13,14 @@ public class Xor implements FileOperation ,Encryption {
 
     @Override
     public void decrypt(int key, File file) {
-        EncryptionAlgorithms.encyptOrDecrypt(key, file, false, EncryptionType.XOR);
+        EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();
+        encryptionAlgorithms.encyptOrDecrypt(key, file, false, EncryptionType.XOR);
     }
 
     @Override
     public void encrypt(int key, File file) {
-        EncryptionAlgorithms.encyptOrDecrypt(key, file, true, EncryptionType.XOR);
+        EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();
+        encryptionAlgorithms.encyptOrDecrypt(key, file, true, EncryptionType.XOR);
     }
 
 

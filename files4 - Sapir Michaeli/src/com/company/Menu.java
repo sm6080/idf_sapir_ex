@@ -1,5 +1,7 @@
 package com.company;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+
 import java.io.File;
 import java.util.Random;
 
@@ -8,10 +10,10 @@ import java.util.Random;
  */
 
 enum State {
-    GET_OPERATION, GET_PATH, GET_KEY
+    GET_OPERATION, GET_PATH, GET_KEY, GET_ENC_ALGORITHM
 }
 
-public class Menu {
+public class Menu implements EncryptionAlgorithms.BeginEndListener{
 
     public static final String EXIT = "exit";
     public static final String ENCRYPTION = "1";
@@ -35,6 +37,8 @@ public class Menu {
         String userInput, operation = "";
         State state = State.GET_OPERATION;
         File file = null;
+        int key=0;
+        boolean lastWasReverse=false;
         output.getOutput("please choose:\n 1. encryption\n 2. decryption\n type exit at any point to exit this program");
         while (!(userInput = input.getInput()).equals(EXIT)) {
             switch (state) {
@@ -53,20 +57,38 @@ public class Menu {
                             state = State.GET_KEY;
                             output.getOutput("please enter a key");
                         } else {
-                            state = State.GET_OPERATION;
-
-                            operationChoice(operation, getKey(), file);
-                            output.getOutput("please choose:\n 1. encryption\n 2. decryption\n type exit at any point to exit this program");
+                            state = State.GET_ENC_ALGORITHM;
+                            key=getKey();
+                            //operationChoice(operation, getKey(), file);
+                            output.getOutput("please choose the algorithm:\n 1. CAESAR\n 2. XOR\n 3. MULTIPLICATION\n 4. REVERSE\n ");
                         }
                     } else
                         output.getOutput("the path is wrong, please enter path again");
                     break;
                 case GET_KEY:
-                    int y = Integer.valueOf(userInput);
-                    operationChoice(operation, y, file);
-                    state = State.GET_OPERATION;
-                    output.getOutput("please choose:\n 1. encryption\n 2. decryption\n type exit at any point to exit this program");
+                     key = Integer.valueOf(userInput);
+                    //operationChoice(operation,key , file);
+                    state = State.GET_ENC_ALGORITHM;
+                    output.getOutput("please choose the algorithm:\n 1. CAESAR\n 2. XOR\n 3. MULTIPLICATION\n 4. REVERSE\n ");
                     break;
+                case GET_ENC_ALGORITHM:
+                    EncryptionType encryptionType=EncryptionType.getType(userInput);
+                    Encryption encryption;
+                    if (encryptionType!=EncryptionType.REVERSE) {
+                        if (lastWasReverse){
+                            encryption=EncryptionFactory.reverseEncryption(encryptionType);
+                            lastWasReverse=false;
+                        }
+                        else
+                            encryption=EncryptionFactory.getEncryption(encryptionType);
+                        operationChoice(operation,key , file);
+                        state = State.GET_OPERATION;
+                        output.getOutput("please choose :\n 1. encryption\n 2. decryption\n type exit at any point to exit this program");
+                    }
+                    else {
+                        lastWasReverse = true;
+                        output.getOutput("please choose the algorithm:\n 1. CAESAR\n 2. XOR\n 3. MULTIPLICATION\n 4. REVERSE\n ");
+                    }
             }
         }
     }
@@ -108,4 +130,13 @@ public class Menu {
     }
 
 
+    @Override
+    public void start() {
+        output.getOutput("start");
+    }
+
+    @Override
+    public void finish() {
+        output.getOutput("finish");
+    }
 }

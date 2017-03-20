@@ -2,7 +2,7 @@ package com.company;
 
 public class EncryptionFactory {
 
-    public Encryption getEncryption(EncryptionType encryptionType) {
+    public static Encryption getEncryption(EncryptionType encryptionType) {
         if (encryptionType == null)
             return null;
         switch (encryptionType) {
@@ -17,7 +17,7 @@ public class EncryptionFactory {
         }
     }
 
-    public Encryption reverseEncryption(EncryptionType type) {
+    public static Encryption reverseEncryption(EncryptionType type) {
         return new Reverse(getEncryption(type));
     }
 }

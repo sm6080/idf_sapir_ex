@@ -13,12 +13,14 @@ public class Caesar implements FileOperation ,Encryption {
 
     @Override
     public void decrypt(int key, File file) {
-        EncryptionAlgorithms.encyptOrDecrypt(key, file, false, EncryptionType.CAESAR);
+        EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();
+        encryptionAlgorithms.encyptOrDecrypt(key, file, false, EncryptionType.CAESAR);
     }
 
     @Override
     public void encrypt(int key, File file) {
-        EncryptionAlgorithms.encyptOrDecrypt(key, file, true, EncryptionType.CAESAR);
+        EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();
+        encryptionAlgorithms.encyptOrDecrypt(key, file, true, EncryptionType.CAESAR);
     }
 
 
