@@ -7,24 +7,21 @@ import java.io.*;
  */
 public class EncryptionAlgorithms {
 
-    static BeginEndListener beginEndListener;
+    private Integer decryptionKey = null;
 
-    public void setBeginEndListener(BeginEndListener beginEndListener) {
-        this.beginEndListener = beginEndListener;
-    }
 
-    public void started(){
+    public void started(BeginEndListener beginEndListener){
             if (beginEndListener!=null)
                 beginEndListener.start();
         }
-    public void finished(){
+    public void finished(BeginEndListener beginEndListener){
         if (beginEndListener!=null)
             beginEndListener.finish();
     }
 
 
-    public void encyptOrDecrypt(int key, File file, boolean isChoiseEncrypt, EncryptionType encryptionType) {
-        started();
+    public void encyptOrDecrypt(int key, File file, boolean isChoiseEncrypt, EncryptionType encryptionType, BeginEndListener beginEndListener) {
+        started( beginEndListener);
         String path = file.getPath();
         int x = path.lastIndexOf('.');
         if (isChoiseEncrypt) {    //if key encrypt else decrypt
@@ -39,13 +36,13 @@ public class EncryptionAlgorithms {
             inputStream = new FileInputStream(file);
             outputStream = new FileOutputStream(encryptedFile);
             int actuallyRead = 0;
-            byte b;
+            byte currentByte;
             while ((actuallyRead = inputStream.read()) != -1) {
                 if (isChoiseEncrypt) {
-                    b =doEncrypt(encryptionType,actuallyRead,key);
+                    currentByte =doEncrypt(encryptionType,actuallyRead,key);
                 } else
-                    b = doDecrypt(encryptionType,actuallyRead,key);
-                outputStream.write(b);
+                    currentByte = doDecrypt(encryptionType,actuallyRead,key);
+                outputStream.write(currentByte);
             }
 
         } catch (FileNotFoundException e) {
@@ -65,7 +62,7 @@ public class EncryptionAlgorithms {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                finished();
+                finished( beginEndListener);
         }
     }
 
@@ -76,7 +73,7 @@ public class EncryptionAlgorithms {
             case XOR:
                 return (byte) (actuallyRead ^ key);
             case MULTIPLICATION:
-                return (byte) (actuallyRead * key);
+                return  (byte)((actuallyRead * key) & 0x000000FF);
             default:
                 return 0;
         }
@@ -89,14 +86,23 @@ public class EncryptionAlgorithms {
             case XOR:
                 return (byte) (actuallyRead ^ key);
             case MULTIPLICATION:
-
+                decryptMult(key);
+                int mult=decryptionKey;
+                return (byte) mult;
             default:
                 return 0;
         }
     }
 
-    interface BeginEndListener{
-        void start();
-        void finish();
+
+    private void decryptMult(int key){
+        if (decryptionKey==null) {
+            for (int i = 0; i < 256; i++) {
+                if (((i * key) & 0x000000FF) == 1) {
+                    decryptionKey = i;
+                    break;
+                }
+            }
+        }
     }
 }
