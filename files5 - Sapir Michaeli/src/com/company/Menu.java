@@ -10,7 +10,7 @@ import java.util.Random;
  */
 
 enum State {
-    GET_OPERATION, GET_PATH, GET_KEY, GET_ALGORITHM
+    GET_OPERATION, GET_PATH, GET_KEY, GET_KEY2
 }
 
 public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
@@ -19,7 +19,7 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
     public static final String ENCRYPTION = "1";
     public static final String DECRYPTION = "2";
     public static final String MAIN = "please choose:\n 1. encryption\n 2. decryption\n type exit at any point to exit this program";
-    public static final String ALGORITHM = "please choose the algorithm:\n 1. CAESAR\n 2. XOR\n 3. MULTIPLICATION\n 4. REVERSE\n";
+    //public static final String ALGORITHM = "please choose the algorithm:\n 1. CAESAR\n 2. XOR\n 3. MULTIPLICATION\n 4. REVERSE\n";
     public static final String ENTER = "please enter again";
 
 
@@ -27,7 +27,7 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
     private Input input;
     private  String userInput;
     private State state =State.GET_OPERATION;
-    private Integer key=0;
+    private Integer key=0, key2=0;
     private  File file=null;
     private String operation="";
     private Encryption encryption=null;
@@ -53,64 +53,49 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
                 case GET_PATH:
                     getPathFunction();
                     break;
-                case GET_ALGORITHM:
-                    getAlgorithm(wasReverse);
-                    break;
                 case GET_KEY:
                     try {
-                        getKeyFromUser();
-                        state = State.GET_OPERATION;
-                        operationChoice(operation, key, file, encryption);
-                        output.getOutput(MAIN);
+                        key=getKeyFromUser(false);
                     } catch (BadKeyException e) {
                         e.printStackTrace();
                     }
+                    state=State.GET_KEY2;
+                    output.getOutput("enter second key");
+                    break;
+                case GET_KEY2:
+                    try {
+                        key2=getKeyFromUser(true);
+                    } catch (BadKeyException e) {
+                        e.printStackTrace();
+                    }
+                    state=State.GET_OPERATION;
+                    output.getOutput(MAIN);
                     break;
             }
         }
     }
 
-    private void getKeyFromUser() throws BadKeyException {
+    private Integer getKeyFromUser(boolean equalKey2) throws BadKeyException {
         key = Integer.valueOf(userInput);
-        if(key==null)
+        if(key==null && equalKey2 && key==key2)
             throw new BadKeyException("error key "+ENTER);
+        return key;
     }
 
-    private void getAlgorithm(boolean wasReverse) {
-        EncryptionType type = EncryptionType.getType(userInput);
-        if (type != EncryptionType.REVERSE) {
-            if(type!=null) {
-                if (wasReverse) {
-                    encryption = EncryptionFactory.reverseEncryption(type);
-                    wasReverse = false;
-                } else
-                    encryption = EncryptionFactory.getEncryption(type);
-                state = ifKeyNeeded();
-            }
-            else
-                output.getOutput("error input algorithm "+ENTER);
-        }
-        else{
-            wasReverse = true;
-            output.getOutput(ALGORITHM);
-        }
-    }
-
-    private State ifKeyNeeded() {
+    private void ifKeyNeeded() {
         if(operation.equals(DECRYPTION)) {
-            output.getOutput("enter key");
-            return State.GET_KEY;
+            output.getOutput("enter first key");
+            state= State.GET_KEY;
         }
         getRandomKey();
-        operationChoice(operation, key, file,encryption);
+        encrypt();
         output.getOutput(MAIN);
-        return State.GET_OPERATION;
+        state= State.GET_OPERATION;
     }
 
     private void getPathFunction() {
         if ((file = getPath(userInput)) != null) {
-            output.getOutput(ALGORITHM);
-            state=State.GET_ALGORITHM;
+           ifKeyNeeded();
         }
         else
             output.getOutput("the path is wrong,"+ENTER);
@@ -130,17 +115,10 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
         Key randomKey=new Key();
         key = randomKey.getKey();
         output.getOutput("your key:"+key);
-        if(key%2==0&&operation.equals(EncryptionType.MULTIPLICATION)&&key==0)
-            key++;
-    }
-
-    private void operationChoice(String userInput,Integer key,File file,Encryption encryptionAlgorithm) {
-        encryptionAlgorithm.setBeginEndListener(this);
-        if (userInput.equals(DECRYPTION)) {
-            encryptionAlgorithm.decrypt(key,file);
-        } else {
-            encryptionAlgorithm.encrypt(key,file);
-        }
+        /*if(key%2==0&&operation.equals(EncryptionType.MULTIPLICATION)&&key==0)
+            key++;*/
+        key2 = randomKey.getKey();
+        output.getOutput("your second key:"+key2);
     }
 
     File getPath(String path) {
@@ -148,6 +126,29 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
         if (file.exists() && file.isFile())
             return file;
         return null;
+    }
+
+    private void encrypt(){
+        Encryption reverse =new Reverse(new Double<Encryption,Encryption>( new Caesar(),new Multiplication(),key2));
+        File encryptedFile=createFile();
+        Encryption encryption =new Double<Encryption,Encryption>(new Xor(),reverse,key2);
+        encOrDec(encryption,file,encryptedFile);
+        //encOrDec(reverse,encryptedFile,encryptedFile);
+
+    }
+
+    private void encOrDec(Encryption encryption,File sourceFile, File desFile){
+        if (operation.equals(DECRYPTION))
+            encryption.decrypt(key,sourceFile,desFile);
+        else
+            encryption.encrypt(key,sourceFile,desFile);
+    }
+
+    private File createFile(){
+        if (operation.equals(DECRYPTION)) {
+            return EncryptionAlgorithms.crateFileWithEnding(file, false);
+        }
+        return EncryptionAlgorithms.crateFileWithEnding(file, true);
     }
 
 

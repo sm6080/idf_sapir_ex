@@ -20,9 +20,9 @@ public class EncryptionAlgorithms {
     }
 
 
-    public void encyptOrDecrypt(int key, File file, boolean isChoiseEncrypt, EncryptionType encryptionType, BeginEndListener beginEndListener) {
+    public void encyptOrDecrypt(int key, File file,File encOrDecFile, boolean isChoiseEncrypt, EncryptionType encryptionType, BeginEndListener beginEndListener) {
         started( beginEndListener);
-        File encOrDecFile=crateFileWithEnding(file, isChoiseEncrypt);
+       // File encOrDecFile=crateFileWithEnding(file, isChoiseEncrypt);
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
@@ -100,7 +100,7 @@ public class EncryptionAlgorithms {
     }
 
 
-    public File crateFileWithEnding(File file, boolean isChoiseEncrypt) {
+    public static File crateFileWithEnding(File file, boolean isChoiseEncrypt) {
         String path = file.getPath();
         int lastDot = path.lastIndexOf('.');
         if (isChoiseEncrypt) {    //if key encrypt else decrypt

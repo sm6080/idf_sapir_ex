@@ -13,8 +13,8 @@ public abstract class Encryption {
         this.beginEndListener = beginEndListener;
     }
 
-    abstract void encrypt(int key, File file);
-    abstract void decrypt(int key, File file);
+    abstract void encrypt(int key, File file, File encryptedFile);
+    abstract void decrypt(int key, File file,File decryptedFile);
 
 
 }

@@ -8,15 +8,15 @@ import java.io.File;
 public class Xor extends Encryption {
 
     @Override
-    public void decrypt(int key, File file) {
+    public void decrypt(int key, File file,File decryptedFile) {
         EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();
-        encryptionAlgorithms.encyptOrDecrypt(key, file, false, EncryptionType.XOR,this.beginEndListener);
+        encryptionAlgorithms.encyptOrDecrypt(key, file,decryptedFile, false, EncryptionType.XOR,this.beginEndListener);
     }
 
     @Override
-    public void encrypt(int key, File file) {
+    public void encrypt(int key, File file,File encryptedFile) {
         EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();
-        encryptionAlgorithms.encyptOrDecrypt(key, file, true, EncryptionType.XOR, this.beginEndListener);
+        encryptionAlgorithms.encyptOrDecrypt(key, file,encryptedFile, true, EncryptionType.XOR, this.beginEndListener);
     }
 
 

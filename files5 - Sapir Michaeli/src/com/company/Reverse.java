@@ -15,13 +15,13 @@ public class Reverse  extends Encryption {
 
 
     @Override
-    public void decrypt(int key, File file) {
-        algoReverse.encrypt(key, file);
+    public void decrypt(int key, File file,File decryptedFile) {
+        algoReverse.encrypt(key, file,decryptedFile);
     }
 
     @Override
-    public void encrypt(int key, File file) {
-        algoReverse.decrypt(key, file);
+    public void encrypt(int key, File file,File encryptedFile) {
+        algoReverse.decrypt(key, file,encryptedFile);
     }
 }
 

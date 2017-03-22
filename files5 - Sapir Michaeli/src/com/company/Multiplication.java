@@ -8,15 +8,15 @@ import java.io.File;
 public class Multiplication extends Encryption {
 
     @Override
-    public void decrypt(int key, File file) {
+    public void decrypt(int key, File file,File decryptedFile) {
         EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();
-        encryptionAlgorithms.encyptOrDecrypt(key, file, false, EncryptionType.MULTIPLICATION,this.beginEndListener);
+        encryptionAlgorithms.encyptOrDecrypt(key, file,decryptedFile, false, EncryptionType.MULTIPLICATION,this.beginEndListener);
     }
 
     @Override
-    public void encrypt(int key, File file) {
+    public void encrypt(int key, File file,File encryptedFile) {
         EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();
-        encryptionAlgorithms.encyptOrDecrypt(key, file, true, EncryptionType.MULTIPLICATION,this.beginEndListener);
+        encryptionAlgorithms.encyptOrDecrypt(key, file,encryptedFile, true, EncryptionType.MULTIPLICATION, this.beginEndListener);
     }
 
 

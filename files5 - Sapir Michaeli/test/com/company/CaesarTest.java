@@ -14,8 +14,8 @@ class CaesarTest {
     void encryptTest() {
         Encryption encryption = new Caesar();
         File file = new File("C:\\files\\sap.txt");
-        encryption.encrypt(12345, file);
         File fileEncrypt = new File("C:\\files\\sap.encrypted.txt");
+        encryption.encrypt(12345, file,fileEncrypt);
         InputStream inputStreamEncrypt = null, inputStream = null;
         try {
             inputStreamEncrypt = new FileInputStream(fileEncrypt);
@@ -60,8 +60,8 @@ class CaesarTest {
     void decryptTest(){
         Encryption encryption = new Caesar();
         File file = new File("C:\\files\\sap.txt");
-        encryption.decrypt(12345, file);
         File decryptedFile = new File("C:\\files\\sap.encrypted_decrypted.txt");
+        encryption.decrypt(12345, file,decryptedFile);
         InputStream decryptedInputstream = null, inputStream = null;
         try {
             decryptedInputstream = new FileInputStream(decryptedFile);
