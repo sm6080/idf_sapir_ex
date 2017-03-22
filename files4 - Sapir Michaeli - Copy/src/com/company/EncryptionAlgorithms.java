@@ -36,13 +36,13 @@ public class EncryptionAlgorithms {
             inputStream = new FileInputStream(file);
             outputStream = new FileOutputStream(encryptedFile);
             int actuallyRead = 0;
-            byte b;
+            byte currentByte;
             while ((actuallyRead = inputStream.read()) != -1) {
                 if (isChoiseEncrypt) {
-                    b =doEncrypt(encryptionType,actuallyRead,key);
+                    currentByte =doEncrypt(encryptionType,actuallyRead,key);
                 } else
-                    b = doDecrypt(encryptionType,actuallyRead,key);
-                outputStream.write(b);
+                    currentByte = doDecrypt(encryptionType,actuallyRead,key);
+                outputStream.write(currentByte);
             }
 
         } catch (FileNotFoundException e) {
@@ -86,7 +86,7 @@ public class EncryptionAlgorithms {
             case XOR:
                 return (byte) (actuallyRead ^ key);
             case MULTIPLICATION:
-                decryptMult( actuallyRead,  key);
+                decryptMult(actuallyRead,key);
                 int mult=decryptionKey;
                 return (byte) mult;
             default:
@@ -95,8 +95,8 @@ public class EncryptionAlgorithms {
     }
 
 
-    private void decryptMult(int actuallyRead, int key){
-        if (decryptionKey==null) {
+    private void decryptMult(int actuallyRead,int key) {
+        if (decryptionKey == null) {
             for (int i = 0; i < 256; i++) {
                 if (((i * key) & 0x000000FF) == 1) {
                     decryptionKey = i;
@@ -105,4 +105,6 @@ public class EncryptionAlgorithms {
             }
         }
     }
+
+
 }
