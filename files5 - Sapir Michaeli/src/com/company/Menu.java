@@ -68,6 +68,7 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
                     } catch (BadKeyException e) {
                         e.printStackTrace();
                     }
+                    encrypt();
                     state=State.GET_OPERATION;
                     output.getOutput(MAIN);
                     break;
@@ -77,7 +78,7 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
 
     private Integer getKeyFromUser(boolean equalKey2) throws BadKeyException {
         key = Integer.valueOf(userInput);
-        if(key==null && equalKey2 && key==key2)
+        if(key==null ||( equalKey2 && key==key2))
             throw new BadKeyException("error key "+ENTER);
         return key;
     }
@@ -86,6 +87,7 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
         if(operation.equals(DECRYPTION)) {
             output.getOutput("enter first key");
             state= State.GET_KEY;
+            return;
         }
         getRandomKey();
         encrypt();
@@ -129,7 +131,7 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
     }
 
     private void encrypt(){
-        Encryption reverse =new Reverse(new Double<Encryption,Encryption>( new Caesar(),new Multiplication(),key2));
+        Encryption reverse =new Reverse(new Double<Encryption,Encryption>( new Caesar(),new Xor(),key2));
         File encryptedFile=createFile();
         Encryption encryption =new Double<Encryption,Encryption>(new Xor(),reverse,key2);
         encOrDec(encryption,file,encryptedFile);
@@ -161,8 +163,7 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
     public void finish() {
         output.getOutput("finish");
     }
-
-
+    
     @Override
     public void exception(String exceptionMessage) {
         output.getOutput(exceptionMessage);

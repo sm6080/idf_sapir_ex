@@ -111,4 +111,10 @@ public class EncryptionAlgorithms {
         return new File(path);
     }
 
+     static File createFileTemp(String path) {
+        int dot = path.lastIndexOf('.');
+        path = path.substring(0, dot) + ".tmp.txt";
+        return  new File(path);
+    }
+
 }
