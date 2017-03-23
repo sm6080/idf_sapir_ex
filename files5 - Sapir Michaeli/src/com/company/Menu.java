@@ -2,7 +2,7 @@ package com.company;
 
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 
-import java.io.File;
+import java.io.*;
 import java.util.Random;
 
 /**
@@ -10,27 +10,25 @@ import java.util.Random;
  */
 
 enum State {
-    GET_OPERATION, GET_PATH, GET_KEY, GET_KEY2
+    GET_OPERATION, GET_PATH, GET_KEY
 }
 
-public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
+public class Menu implements BeginEndListener , InputException.ExceptionListener{
 
     public static final String EXIT = "exit";
     public static final String ENCRYPTION = "1";
     public static final String DECRYPTION = "2";
     public static final String MAIN = "please choose:\n 1. encryption\n 2. decryption\n type exit at any point to exit this program";
-    //public static final String ALGORITHM = "please choose the algorithm:\n 1. CAESAR\n 2. XOR\n 3. MULTIPLICATION\n 4. REVERSE\n";
+    public static final String ENTET_KEY = "please enter key path";
     public static final String ENTER = "please enter again";
-
 
     private Output output;
     private Input input;
-    private  String userInput;
-    private State state =State.GET_OPERATION;
-    private Integer key=0, key2=0;
-    private  File file=null;
-    private String operation="";
-    private Encryption encryption=null;
+    private String userInput;
+    private State state = State.GET_OPERATION;
+    private Integer key = 0, key2 = 1;
+    private File file = null;
+    String operation="";
 
     public Menu() {
         output = new Output();
@@ -43,7 +41,6 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
     }
 
     public void getMenu() {
-        boolean wasReverse=false;
         output.getOutput(MAIN);
         while (!(userInput = input.getInput()).equals(EXIT)) {
             switch (state) {
@@ -51,76 +48,144 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
                     operation = getOperation();
                     break;
                 case GET_PATH:
-                    getPathFunction();
+                    getPathFunction(operation);
                     break;
                 case GET_KEY:
                     try {
-                        key=getKeyFromUser(false);
-                    } catch (BadKeyException e) {
+                        File keyFile= getKeyFileFromUser();
+                        readKeyFromFile(keyFile);
+                        encrypt();
+                        state = State.GET_OPERATION;
+                        output.getOutput(MAIN);
+                    } catch (InputException e) {
+                        e.setExceptionListener(this);
+                        e.getMessage();
                         e.printStackTrace();
                     }
-                    state=State.GET_KEY2;
-                    output.getOutput("enter second key");
-                    break;
-                case GET_KEY2:
-                    try {
-                        key2=getKeyFromUser(true);
-                    } catch (BadKeyException e) {
-                        e.printStackTrace();
-                    }
-                    encrypt();
-                    state=State.GET_OPERATION;
-                    output.getOutput(MAIN);
                     break;
             }
         }
     }
 
-    private Integer getKeyFromUser(boolean equalKey2) throws BadKeyException {
-        key = Integer.valueOf(userInput);
-        if(key==null ||( equalKey2 && key==key2))
-            throw new BadKeyException("error key "+ENTER);
-        return key;
+    private File getKeyFileFromUser() throws InputException {
+        File keyFile= getPath(userInput);
+        if (keyFile==null)
+                throw new BadKeyException("error path"+ENTER);
+        return keyFile;
     }
 
-    private void ifKeyNeeded() {
-        if(operation.equals(DECRYPTION)) {
-            output.getOutput("enter first key");
-            state= State.GET_KEY;
-            return;
-        }
-        getRandomKey();
-        encrypt();
-        output.getOutput(MAIN);
-        state= State.GET_OPERATION;
+    private int getKeyFromUser() throws BadKeyException {
+        Integer myKey = Integer.valueOf(userInput);
+        if (myKey == null ||myKey==key)
+            throw new BadKeyException("error key, "+ ENTER);
+        return myKey;
     }
 
-    private void getPathFunction() {
+    private void getPathFunction(String operation) {
         if ((file = getPath(userInput)) != null) {
-           ifKeyNeeded();
-        }
-        else
-            output.getOutput("the path is wrong,"+ENTER);
+            if (operation.equals(DECRYPTION)) {
+                state = State.GET_KEY;
+                output.getOutput(ENTET_KEY);
+            } else {
+                getKey();
+                encrypt();
+                state = State.GET_OPERATION;
+                output.getOutput(MAIN);
+            }
+        } else
+            output.getOutput("the path is wrong, "+ENTER);
     }
-
     private String getOperation() {
         if (userInput.equals(DECRYPTION) || userInput.equals(ENCRYPTION)) {
             state = State.GET_PATH;
             output.getOutput("enter path");
             return userInput;
         } else
-            output.getOutput("the choice is not valid,"+MAIN);
+            output.getOutput("the choice is not valid, "+MAIN);
         return "";
     }
 
-    private void getRandomKey() {
-        Key randomKey=new Key();
-        key = randomKey.getKey();
-        output.getOutput("your key:"+key);
-        /*if(key%2==0&&operation.equals(EncryptionType.MULTIPLICATION)&&key==0)
+    private void getKey() {
+        Key keyC = new Key();
+        key= (Integer) keyC.getKey();
+       /* if (key==0)
             key++;*/
-        key2 = randomKey.getKey();
-        output.getOutput("your second key:"+key2);
+        output.getOutput("your first key:" + key);
+        key2= (Integer) keyC.getKey();
+        /*if (key==key2 ||key2==0)
+            key2++;*/
+        output.getOutput("your second key :" + key2);
+        writeKeyToFile();
+    }
+
+    private void writeKeyToFile() {
+        File keyFile = createKeyFile();
+        ObjectOutputStream objectOutputStream = null;
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(keyFile);
+            objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(key);
+            objectOutputStream.writeObject(key2);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (objectOutputStream != null)
+                try {
+                    objectOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            if (outputStream != null)
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+    }
+    private void readKeyFromFile(File keyFile) {
+        InputStream inputStream = null;
+        ObjectInputStream objectInputStream = null;
+        try {
+            inputStream = new FileInputStream(keyFile);
+            objectInputStream = new ObjectInputStream(inputStream);
+            key = (Integer) objectInputStream.readObject();
+            key2 = (Integer) objectInputStream.readObject();
+            System.out.println(key);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (objectInputStream != null)
+                try {
+                    objectInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            if (inputStream != null)
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    private void encrypt() {
+        Encryption encryptionR = new Reverse(new Double<>(new Caesar(null), new Caesar(null)));
+        Encryption encryption = new Double<>(new Xor(this), encryptionR);
+        Double d = (Double) encryption;
+        d.setSecondKeyForEncryption(key2);
+        if (operation.equals(DECRYPTION))
+            encryption.decrypt(key, file, EncryptionAlgorithms.crateFileWithEnding(file,false ));
+        else
+            encryption.encrypt(key, file, EncryptionAlgorithms.crateFileWithEnding(file,true));
     }
 
     File getPath(String path) {
@@ -129,28 +194,12 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
             return file;
         return null;
     }
-
-    private void encrypt(){
-        Encryption reverse =new Reverse(new Double<Encryption,Encryption>( new Caesar(),new Xor(),key2));
-        File encryptedFile=createFile();
-        Encryption encryption =new Double<Encryption,Encryption>(new Xor(),reverse,key2);
-        encOrDec(encryption,file,encryptedFile);
-        //encOrDec(reverse,encryptedFile,encryptedFile);
-
-    }
-
-    private void encOrDec(Encryption encryption,File sourceFile, File desFile){
-        if (operation.equals(DECRYPTION))
-            encryption.decrypt(key,sourceFile,desFile);
-        else
-            encryption.encrypt(key,sourceFile,desFile);
-    }
-
-    private File createFile(){
-        if (operation.equals(DECRYPTION)) {
-            return EncryptionAlgorithms.crateFileWithEnding(file, false);
-        }
-        return EncryptionAlgorithms.crateFileWithEnding(file, true);
+    private File createKeyFile(){
+        int lastDot = file.getPath().lastIndexOf('.');
+        String newPath;
+        newPath=file.getPath().substring(0, lastDot)+ ".enryptKey.bin";
+        File newFile=new File(newPath);
+        return newFile;
     }
 
 
@@ -163,7 +212,7 @@ public class Menu implements BeginEndListener , BadKeyException.BadKeyListener{
     public void finish() {
         output.getOutput("finish");
     }
-    
+
     @Override
     public void exception(String exceptionMessage) {
         output.getOutput(exceptionMessage);

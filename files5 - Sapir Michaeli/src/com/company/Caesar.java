@@ -7,6 +7,10 @@ import java.io.*;
  */
 public class Caesar extends Encryption {
 
+    public Caesar(BeginEndListener beginEndListener){
+        super(beginEndListener);
+    }
+
     @Override
     public void decrypt(int key, File file,File decryptedFile) {
         EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();

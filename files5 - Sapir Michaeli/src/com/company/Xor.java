@@ -6,6 +6,9 @@ import java.io.File;
  * Created by Sapir Michaeli on 20.03.2017.
  */
 public class Xor extends Encryption {
+    public Xor(BeginEndListener beginEndListener){
+        super(beginEndListener);
+    }
 
     @Override
     public void decrypt(int key, File file,File decryptedFile) {

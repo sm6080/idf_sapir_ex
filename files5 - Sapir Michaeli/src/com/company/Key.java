@@ -1,17 +1,30 @@
 package com.company;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  * Created by Sapir Michaeli on 19.03.2017.
  */
-public class Key implements KeyInterface{
+public class Key implements KeyInterface , Serializable{
 
-    Random random = new Random(System.currentTimeMillis());
+    Random random;
+    Integer key;
+
+    public Key() {
+        random = new Random(System.currentTimeMillis());
+    }
+
 
     @Override
-    public int getKey() {
-        return random.nextInt();
+    public Object getKey() {
+        key=random.nextInt();
+        return key;
+    }
+
+    @Override
+    public void setKey(Object key) {
+        this.key=(Integer)key;
     }
 
 

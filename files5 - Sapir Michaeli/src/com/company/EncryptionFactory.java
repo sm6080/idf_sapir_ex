@@ -7,11 +7,11 @@ public class EncryptionFactory {
             return null;
         switch (encryptionType) {
             case CAESAR:
-                return new Caesar();
+                return new Caesar(null);
            case XOR:
-                return new Xor();
+                return new Xor(null);
             case MULTIPLICATION:
-                return new Multiplication();
+                return new Multiplication(null);
             default:
                 return null;
         }

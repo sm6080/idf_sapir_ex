@@ -9,14 +9,13 @@ public class Double <T extends Encryption, M extends Encryption> extends Encrypt
     T firstEncryptAlgo;
     M secondEncryptAlgo;
 
-    Integer secondKeyForEncryption;
+    private Integer secondKeyForEncryption;
     private File tmpFile;
 
-    public Double(T firstAlgo, M secondAlgo, Integer key2) {
+    public Double(T firstAlgo, M secondAlgo) {
+        super(null);
         this.firstEncryptAlgo = firstAlgo;
         this.secondEncryptAlgo = secondAlgo;
-        this.secondKeyForEncryption = key2;
-
     }
 
     public void setSecondKeyForEncryption(Integer secondKeyForEncryption) {
@@ -25,7 +24,8 @@ public class Double <T extends Encryption, M extends Encryption> extends Encrypt
 
     @Override
     void encrypt(int key, File file, File encryptedFile) {
-        tmpFile = EncryptionAlgorithms.createFileTemp(file.getPath());
+        tmpFile = EncryptionAlgorithms.createFileTemp(encryptedFile.getPath());
+        setReverseSecondKey(key);
         firstEncryptAlgo.encrypt(key, file, tmpFile);
         secondEncryptAlgo.encrypt(secondKeyForEncryption, tmpFile, encryptedFile);
         tmpFile.delete();
@@ -34,10 +34,25 @@ public class Double <T extends Encryption, M extends Encryption> extends Encrypt
     @Override
     void decrypt(int key, File file, File decryptedFile) {
         tmpFile = EncryptionAlgorithms.createFileTemp(file.getPath());
+        setReverseSecondKey(key);
         secondEncryptAlgo.decrypt(secondKeyForEncryption, file, tmpFile);
         firstEncryptAlgo.decrypt(key, tmpFile, decryptedFile);
         tmpFile.delete();
     }
 
 
+    private void setReverseSecondKey(int key){
+        if(secondKeyForEncryption==null)
+            secondKeyForEncryption=key;
+    }
+
+
+
 }
+
+
+
+
+
+
+

@@ -10,6 +10,7 @@ public class Reverse  extends Encryption {
     private Encryption algoReverse;
 
     public Reverse(Encryption algoReverse) {
+        super(null);
         this.algoReverse = algoReverse;
     }
 

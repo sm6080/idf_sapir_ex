@@ -99,7 +99,6 @@ public class EncryptionAlgorithms {
         }
     }
 
-
     public static File crateFileWithEnding(File file, boolean isChoiseEncrypt) {
         String path = file.getPath();
         int lastDot = path.lastIndexOf('.');

@@ -12,7 +12,7 @@ class CaesarTest {
 
     @Test
     void encryptTest() {
-        Encryption encryption = new Caesar();
+        Encryption encryption = new Caesar(null);
         File file = new File("C:\\files\\sap.txt");
         File fileEncrypt = new File("C:\\files\\sap.encrypted.txt");
         encryption.encrypt(12345, file,fileEncrypt);
@@ -58,7 +58,7 @@ class CaesarTest {
 
     @Test
     void decryptTest(){
-        Encryption encryption = new Caesar();
+        Encryption encryption = new Caesar(null);
         File file = new File("C:\\files\\sap.txt");
         File decryptedFile = new File("C:\\files\\sap.encrypted_decrypted.txt");
         encryption.decrypt(12345, file,decryptedFile);

@@ -9,6 +9,10 @@ public abstract class Encryption {
 
     BeginEndListener beginEndListener;
 
+    public Encryption(BeginEndListener beginEndListener) {
+        this.beginEndListener=beginEndListener;
+    }
+
     public void setBeginEndListener(BeginEndListener beginEndListener) {
         this.beginEndListener = beginEndListener;
     }

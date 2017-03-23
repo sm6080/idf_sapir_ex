@@ -5,5 +5,6 @@ package com.company;
  */
 public interface KeyInterface {
 
-    int getKey();
+    Object getKey();
+    void setKey(Object key);
 }
