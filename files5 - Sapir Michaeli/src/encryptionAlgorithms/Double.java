@@ -1,13 +1,14 @@
 package encryptionAlgorithms;
 
 import com.company.EncryptionAlgorithms;
+import key.DoubleKey;
 
 import java.io.File;
 
 /**
  * Created by Sapir Michaeli on 22.03.2017.
  */
-public class Double <T extends Encryption, M extends Encryption> extends Encryption {
+public class Double <T extends Encryption, M extends Encryption> extends Encryption<DoubleKey> {
     T firstEncryptAlgo;
     M secondEncryptAlgo;
 

@@ -15,7 +15,6 @@ public class DoubleKey <T,M> implements Serializable {
     }
 
     public Key<T> getKey1() {
-
         return key1;
     }
 

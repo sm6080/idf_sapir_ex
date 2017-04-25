@@ -9,7 +9,7 @@ import java.io.*;
 /**
  * Created by Sapir Michaeli on 16.03.2017.
  */
-public class Caesar extends Encryption {
+public class Caesar extends Encryption<Integer> {
 
     public Caesar(BeginEndListener beginEndListener){
         super(beginEndListener);
@@ -26,6 +26,7 @@ public class Caesar extends Encryption {
         EncryptionAlgorithms encryptionAlgorithms=new EncryptionAlgorithms();
         encryptionAlgorithms.encyptOrDecrypt(key, file,encryptedFile, true, EncryptionType.CAESAR, this.beginEndListener);
     }
+
 
 
 }

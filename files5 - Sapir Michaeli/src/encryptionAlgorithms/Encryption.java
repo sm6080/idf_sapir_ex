@@ -8,7 +8,7 @@ import java.io.File;
  * Created by Sapir Michaeli on 16.03.2017.
  */
 public abstract class Encryption<T> {
-
+    T key;
     BeginEndListener beginEndListener;
 
     public Encryption(){
